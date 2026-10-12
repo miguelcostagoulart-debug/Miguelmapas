@@ -4,303 +4,235 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#075985">
   <title>miguelMapas de Itanhaém</title>
-  <meta name="description" content="Mapa turístico e educativo de Itanhaém, São Paulo.">
+
   <link rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
   <style>
-    * { box-sizing: border-box; }
-
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #eef6f8;
-      color: #173746;
+      background: #f1f5f9;
+      color: #172033;
     }
 
     header {
-      background: linear-gradient(135deg, #075985, #087e8b);
+      background: linear-gradient(120deg, #075985, #15803d);
       color: white;
-      padding: 28px 16px;
+      padding: 22px 16px;
       text-align: center;
     }
 
-    header h1 {
-      margin: 0 0 8px;
-      font-size: clamp(27px, 5vw, 42px);
-    }
-
-    header p { margin: 5px 0; }
-
-    .subtitulo {
-      font-size: 14px;
-      opacity: .9;
-    }
+    header h1 { margin: 0 0 8px; }
 
     main {
       max-width: 1100px;
       margin: auto;
-      padding: 18px;
-    }
-
-    .painel {
-      background: white;
-      border: 1px solid #d4e5e9;
-      border-radius: 14px;
       padding: 16px;
-      margin-bottom: 18px;
-      box-shadow: 0 3px 12px #1637460d;
     }
 
-    h2 { margin-top: 0; }
+    .aviso {
+      background: white;
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
 
     #mapa {
-      height: 460px;
-      min-height: 330px;
-      width: 100%;
+      height: 65vh;
+      min-height: 380px;
+      border: 2px solid #cbd5e1;
       border-radius: 12px;
-      border: 2px solid #c8e1e8;
-      z-index: 1;
     }
 
-    .mapa-area { position: relative; }
-
-    .rosa {
-      position: absolute;
-      z-index: 500;
-      right: 12px;
-      top: 12px;
-      width: 68px;
-      height: 82px;
-      border-radius: 12px;
-      background: #ffffffed;
-      border: 1px solid #c5d8df;
-      box-shadow: 0 2px 8px #0002;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      pointer-events: none;
-    }
-
-    .rosa .norte { color: #c0392b; font-size: 15px; }
-    .rosa .seta { font-size: 23px; line-height: 24px; }
-    .rosa .laterais {
-      display: flex;
-      width: 100%;
-      justify-content: space-around;
-      font-size: 12px;
-    }
-    .rosa .sul { font-size: 12px; }
-
-    .grade {
+    .lugares {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 12px;
+      margin-top: 16px;
     }
 
     .lugar {
       background: white;
-      border: 1px solid #d4e5e9;
-      border-radius: 12px;
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+      padding: 14px;
+      border-radius: 10px;
     }
 
-    .lugar h3 { margin: 0; font-size: 18px; }
-    .lugar p { margin: 0; line-height: 1.5; font-size: 14px; }
-
-    button {
-      border: 0;
-      border-radius: 8px;
-      padding: 11px 14px;
-      background: #087e8b;
-      color: white;
-      font-size: 15px;
-      cursor: pointer;
+    .lugar h2 {
+      font-size: 18px;
+      margin-top: 0;
     }
 
-    button:hover { background: #075985; }
-    button:focus-visible { outline: 3px solid #f2bd55; }
-
-    .lugar button { margin-top: auto; }
-
-    .aviso {
-      font-size: 13px;
-      line-height: 1.6;
-      color: #526a75;
-    }
+    a { color: #075985; }
 
     footer {
       text-align: center;
-      padding: 24px 16px;
-      background: #dcecf0;
-      margin-top: 22px;
-      line-height: 1.7;
-    }
-
-    @media (max-width: 600px) {
-      main { padding: 12px; }
-      #mapa { height: 390px; }
+      padding: 18px;
+      color: #475569;
     }
   </style>
 </head>
 
 <body>
   <header>
-    <h1>🗺️ miguelMapas</h1>
-    <p>Descubra Itanhaém, São Paulo</p>
-    <p class="subtitulo">
-      Turismo • Geografia • História • Natureza
-    </p>
+    <h1>miguelMapas de Itanhaém</h1>
+    <p>Praias, pontos turísticos e lugares importantes</p>
   </header>
 
   <main>
-    <section class="painel">
-      <h2>📍 Mapa interativo</h2>
-      <p>
-        Escolha um ponto turístico na lista ou toque em um
-        marcador para conhecer o lugar.
-      </p>
+    <div class="aviso">
+      <strong>Como usar:</strong>
+      toque nos marcadores para ver o nome do lugar e abrir sua
+      localização no Google Maps.
+      <br>
+      <small>
+        Os marcadores são referências aproximadas e não devem ser
+        usados para navegação.
+      </small>
+    </div>
 
-      <div class="mapa-area">
-        <div id="mapa" aria-label="Mapa interativo de Itanhaém"></div>
-        <div class="rosa" aria-label="Rosa dos ventos">
-          <div class="norte">N</div>
-          <div class="seta">▲</div>
-          <div class="laterais">
-            <span>O</span><span>L</span>
-          </div>
-          <div class="sul">S</div>
-        </div>
-      </div>
+    <div id="mapa"></div>
 
-      <p class="aviso">
-        Mapa fornecido pelo OpenStreetMap. A rosa dos ventos
-        indica as direções geográficas; o mapa está orientado
-        com o norte para cima.
-      </p>
-    </section>
+    <section class="lugares">
+      <article class="lugar">
+        <h2>Praia dos Sonhos</h2>
+        <a target="_blank" rel="noopener"
+          href="https://www.google.com/maps/search/?api=1&query=Praia+dos+Sonhos+Itanhaem+SP">
+          Abrir no Google Maps
+        </a>
+      </article>
 
-    <section>
-      <h2>🌎 Pontos do miguelMapas</h2>
-      <div id="lista" class="grade"></div>
-    </section>
+      <article class="lugar">
+        <h2>Praia do Cibratel</h2>
+        <a target="_blank" rel="noopener"
+          href="https://www.google.com/maps/search/?api=1&query=Praia+do+Cibratel+Itanhaem+SP">
+          Abrir no Google Maps
+        </a>
+      </article>
 
-    <section class="painel" style="margin-top:18px">
-      <h2>🧭 Aprenda geografia</h2>
-      <p><strong>Norte (N):</strong> parte superior do mapa.</p>
-      <p><strong>Sul (S):</strong> parte inferior.</p>
-      <p><strong>Leste (L):</strong> lado direito.</p>
-      <p><strong>Oeste (O):</strong> lado esquerdo.</p>
+      <article class="lugar">
+        <h2>Cama de Anchieta</h2>
+        <a target="_blank" rel="noopener"
+          href="https://www.google.com/maps/search/?api=1&query=Cama+de+Anchieta+Itanhaem+SP">
+          Abrir no Google Maps
+        </a>
+      </article>
+
+      <article class="lugar">
+        <h2>Morro do Paranambuco</h2>
+        <a target="_blank" rel="noopener"
+          href="https://www.google.com/maps/search/?api=1&query=Morro+do+Paranambuco+Itanhaem+SP">
+          Abrir no Google Maps
+        </a>
+      </article>
+
+      <article class="lugar">
+        <h2>Centro Histórico</h2>
+        <a target="_blank" rel="noopener"
+          href="https://www.google.com/maps/search/?api=1&query=Centro+Historico+Itanhaem+SP">
+          Abrir no Google Maps
+        </a>
+      </article>
+
+      <article class="lugar">
+        <h2>Rio Itanhaém</h2>
+        <a target="_blank" rel="noopener"
+          href="https://www.google.com/maps/search/?api=1&query=Rio+Itanhaem+Itanhaem+SP">
+          Abrir no Google Maps
+        </a>
+      </article>
+
+      <article class="lugar">
+        <h2>AITA Escola Nacional de Paramotor</h2>
+        <p>
+          Av. Gov. Mário Covas Júnior, 5790,
+          bairro Califórnia, Itanhaém – SP,
+          CEP 11740-000.
+        </p>
+        <a target="_blank" rel="noopener"
+          href="https://www.google.com/maps/search/?api=1&query=AITA+Escola+Nacional+de+Paramotor%2C+Av.+Gov.+Mario+Covas+Junior%2C+5790%2C+Itanhaem%2C+SP">
+          Conferir endereço no Google Maps
+        </a>
+      </article>
     </section>
   </main>
 
   <footer>
-    <strong>miguelMapas de Itanhaém</strong><br>
-    Projeto educativo de turismo e geografia.<br>
-    Mapa © OpenStreetMap contributors.
+    miguelMapas de Itanhaém · Mapa educativo
   </footer>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+  </script>
 
   <script>
-    // Coordenadas iniciais aproximadas para demonstração.
-    // Conferir a posição exata de cada ponto antes de divulgar.
+    const mapa = L.map("mapa").setView(
+      [-24.215, -46.835], 12
+    );
 
-    const pontos = [
+    L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap"
+      }
+    ).addTo(mapa);
+
+    const lugares = [
       {
         nome: "Praia dos Sonhos",
-        emoji: "🏖️",
-        lat: -24.19,
-        lon: -46.79,
-        descricao: "Praia turística e paisagem costeira de Itanhaém."
+        posicao: [-24.1905, -46.7945],
+        busca: "Praia dos Sonhos Itanhaém SP"
       },
       {
         nome: "Praia do Cibratel",
-        emoji: "🌊",
-        lat: -24.20,
-        lon: -46.82,
-        descricao: "Praia com faixa de areia e vista para o mar."
+        posicao: [-24.2220, -46.8560],
+        busca: "Praia do Cibratel Itanhaém SP"
       },
       {
         nome: "Cama de Anchieta",
-        emoji: "📍",
-        lat: -24.19,
-        lon: -46.79,
-        descricao: "Atração natural e histórica ligada à tradição local."
+        posicao: [-24.1900, -46.7950],
+        busca: "Cama de Anchieta Itanhaém SP"
       },
       {
         nome: "Morro do Paranambuco",
-        emoji: "⛰️",
-        lat: -24.18,
-        lon: -46.79,
-        descricao: "Ponto costeiro conhecido pelas formações rochosas."
+        posicao: [-24.2020, -46.8150],
+        busca: "Morro do Paranambuco Itanhaém SP"
       },
       {
         nome: "Centro Histórico",
-        emoji: "🏛️",
-        lat: -24.18,
-        lon: -46.79,
-        descricao: "Região de interesse histórico e cultural."
+        posicao: [-24.1830, -46.7880],
+        busca: "Centro Histórico Itanhaém SP"
       },
       {
         nome: "Rio Itanhaém",
-        emoji: "🌿",
-        lat: -24.18,
-        lon: -46.78,
-        descricao: "Rio importante para a paisagem natural do município."
+        posicao: [-24.1840, -46.7885],
+        busca: "Rio Itanhaém Itanhaém SP"
       },
       {
-        nome: "Escola Nacional de Paramotor AITA",
-        emoji: "🪂",
-        lat: -24.20,
-        lon: -46.80,
-        descricao: "Escola de Paramotor indicada para inclusão no mapa. A localização exata precisa ser confirmada."
+        nome: "AITA Escola Nacional de Paramotor",
+        // Coordenada de referência aproximada, não confirmada
+        // como a entrada exata da escola.
+        posicao: [-24.233611, -46.871667],
+        busca: "AITA Escola Nacional de Paramotor, Avenida Governador Mário Covas Júnior, 5790, Itanhaém, SP"
       }
     ];
 
-    const mapa = L.map("mapa").setView([-24.19, -46.79], 13);
+    lugares.forEach(function(lugar) {
+      const link =
+        "https://www.google.com/maps/search/?api=1&query=" +
+        encodeURIComponent(lugar.busca);
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(mapa);
-
-    const lista = document.getElementById("lista");
-
-    pontos.forEach((ponto) => {
-      const marcador = L.marker([ponto.lat, ponto.lon])
+      L.marker(lugar.posicao)
         .addTo(mapa)
         .bindPopup(
-          "<strong>" + ponto.emoji + " " + ponto.nome +
-          "</strong><br>" + ponto.descricao
+          "<strong>" + lugar.nome + "</strong><br>" +
+          '<a href="' + link +
+          '" target="_blank" rel="noopener">' +
+          "Abrir no Google Maps</a>"
         );
-
-      const cartao = document.createElement("article");
-      cartao.className = "lugar";
-
-      const titulo = document.createElement("h3");
-      titulo.textContent = ponto.emoji + " " + ponto.nome;
-
-      const descricao = document.createElement("p");
-      descricao.textContent = ponto.descricao;
-
-      const botao = document.createElement("button");
-      botao.textContent = "Ver no mapa";
-
-      botao.addEventListener("click", () => {
-        mapa.setView([ponto.lat, ponto.lon], 16);
-        marcador.openPopup();
-      });
-
-      cartao.append(titulo, descricao, botao);
-      lista.appendChild(cartao);
     });
   </script>
 </body>
