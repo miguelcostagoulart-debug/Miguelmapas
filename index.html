@@ -1,0 +1,265 @@
+
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>miguelMapas de Itanhaém</title>
+
+  <link rel="stylesheet"
+
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+  <style>
+
+    body {
+
+      margin: 0;
+
+      font-family: Arial, sans-serif;
+
+      background: #f0f7f8;
+
+      color: #183443;
+
+    }
+
+    header {
+
+      background: #075985;
+
+      color: white;
+
+      padding: 22px 16px;
+
+      text-align: center;
+
+    }
+
+    header h1 { margin: 0 0 8px; }
+
+    main { padding: 16px; max-width: 1000px; margin: auto; }
+
+    #map {
+
+      height: 55vh;
+
+      min-height: 350px;
+
+      border-radius: 14px;
+
+      border: 2px solid #b8dce5;
+
+    }
+
+    .lugares {
+
+      display: grid;
+
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+      gap: 10px;
+
+      margin: 16px 0;
+
+    }
+
+    .lugar {
+
+      background: white;
+
+      border-radius: 10px;
+
+      padding: 14px;
+
+      border: 1px solid #d5e5e9;
+
+    }
+
+    .lugar button {
+
+      background: #087e8b;
+
+      color: white;
+
+      border: 0;
+
+      border-radius: 6px;
+
+      padding: 9px 12px;
+
+      margin-top: 8px;
+
+      cursor: pointer;
+
+    }
+
+    footer { text-align: center; padding: 20px; }
+
+  </style>
+
+</head>
+
+<body>
+
+  <header>
+
+    <h1>🗺️ miguelMapas</h1>
+
+    <p>Explore os pontos turísticos de Itanhaém, SP</p>
+
+  </header>
+
+  <main>
+
+    <h2>Mapa turístico</h2>
+
+    <p>Selecione um lugar para ver sua posição no mapa.</p>
+
+    <div id="map"></div>
+
+    <h2>📍 Pontos turísticos</h2>
+
+    <div id="lugares" class="lugares"></div>
+
+  </main>
+
+  <footer>
+
+    Projeto educativo miguelMapas de Itanhaém
+
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+
+    const map = L.map('map').setView([-24.19, -46.79], 13);
+
+    L.tileLayer(
+
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+
+      {
+
+        attribution: '&copy; OpenStreetMap contributors',
+
+        maxZoom: 19
+
+      }
+
+    ).addTo(map);
+
+    // Posições iniciais aproximadas.
+
+    // Conferir cada ponto antes da publicação final.
+
+    const pontos = [
+
+      {
+
+        nome: 'Praia dos Sonhos',
+
+        lat: -24.19, lon: -46.79,
+
+        emoji: '🏖️'
+
+      },
+
+      {
+
+        nome: 'Praia do Cibratel',
+
+        lat: -24.20, lon: -46.82,
+
+        emoji: '🏖️'
+
+      },
+
+      {
+
+        nome: 'Cama de Anchieta',
+
+        lat: -24.19, lon: -46.79,
+
+        emoji: '📍'
+
+      },
+
+      {
+
+        nome: 'Morro do Paranambuco',
+
+        lat: -24.18, lon: -46.79,
+
+        emoji: '⛰️'
+
+      },
+
+      {
+
+        nome: 'Centro Histórico',
+
+        lat: -24.18, lon: -46.79,
+
+        emoji: '🏛️'
+
+      },
+
+      {
+
+        nome: 'Rio Itanhaém',
+
+        lat: -24.18, lon: -46.78,
+
+        emoji: '🌊'
+
+      }
+
+    ];
+
+    pontos.forEach((ponto) => {
+
+      const marcador = L.marker([ponto.lat, ponto.lon])
+
+        .addTo(map)
+
+        .bindPopup(ponto.emoji + ' ' + ponto.nome);
+
+      const cartao = document.createElement('article');
+
+      cartao.className = 'lugar';
+
+      const titulo = document.createElement('h3');
+
+      titulo.textContent = ponto.emoji + ' ' + ponto.nome;
+
+      const botao = document.createElement('button');
+
+      botao.textContent = 'Ver no mapa';
+
+      botao.addEventListener('click', () => {
+
+        map.setView([ponto.lat, ponto.lon], 16);
+
+        marcador.openPopup();
+
+      });
+
+      cartao.append(titulo, botao);
+
+      document.getElementById('lugares').appendChild(cartao);
+
+    });
+
+  </script>
+
+</body>
+
+</html>
